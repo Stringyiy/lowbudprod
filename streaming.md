@@ -1,5 +1,79 @@
 ## Linux Setup
 
+### Linux Server
+
+sudo adduser newuser
+
+sudo usermod -aG ssh username
+
+sudo nano /etc/ssh/sshd_config
+
+   ```plaintext
+   Match User newuser
+       AllowTcpForwarding yes
+       X11Forwarding no
+       PermitTunnel yes
+   ```
+
+
+sudo usermod -s /bin/rbash newuser
+
+```bash
+echo "PATH=/usr/local/bin:/usr/bin:/bin" > /home/newuser/.bash_profile
+```
+
+```bash
+sudo systemctl restart sshd
+```
+
+#### Linux Client
+   ```bash
+   ssh -D 8080 -C -N newuser@hostname_or_ip
+   ```
+
+   python -m venv ~/venv
+
+   source ~/venv/bin/activate
+
+   pip install -r requirements.txt
+                
+### Command Line
+                                                 
+1. Open a terminal on your Raspberry Pi.   
+2. Update the package list:
+   ```bash        
+   sudo apt update      
+   ```                            
+3. Upgrade the installed packages:                                      
+   ```bash         
+   sudo apt upgrade               
+   ```                                                                                                                            
+4. (Optional) To perform a full upgrade, which intelligently handles changing dependencies:
+   ```bash              
+   sudo apt full-upgrade                       
+   ```                                           
+5. (Optional) Clean up unused packages:
+   ```bash                 
+   sudo apt autoremove
+   ```
+                                  
+### Graphical User Interface (GUI)                                    
+                                                                                   
+1. Open the **Add/Remove Software** application or **Pi Store** from the main menu.                
+2. Click on **Preferences** and select **Raspberry Pi Software Configuration Tool** (if available).
+3. In the application, look for options to **Update** or **Upgrade**.                                                             
+4. You can also go to the **SYSTEM** menu and choose **Welcome** which opens the Raspberry Pi Software Configuration Tool, where y
+ou can check for updates and perform upgrades.    
+
+```bash
+# Enable SSH
+sudo systemctl enable ssh
+sudo systemctl start ssh
+
+# Enable dynamic port forwarding (example using port 1080)
+ssh -D 1080 -C -q -N user@remote_host
+```
+
 ### Install OBS on Linux
 
 '''
