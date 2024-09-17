@@ -1,5 +1,7 @@
 ## Linux Setup
 
+### Hardware Components
+
 ### Linux Server
 
 sudo adduser pi
@@ -70,9 +72,9 @@ sudo reboot
 #### Audio Set Up
 IQAudio Codec Zero on Pi5 (https://github.com/raspberrypi/Pi-Codec/issues/9)
 
-   python -m venv ~/venv
+   python -m venv ~/envname
 
-   source ~/venv/bin/activate
+   source ~/envname/bin/activate
 
    pip install -r requirements.txt
                 
@@ -83,6 +85,11 @@ sudo add-apt-repository ppa:obsproject/obs-studio
 
 sudo apt install obs-studio
 '''
+
+#### Screen Broadcasting
+obs-websocket obs-cli obs-distroAV
+display capture
+streamout
 
 #### Interface
 Consider using an individual AP to handle wireless audio video streams  
