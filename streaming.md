@@ -34,15 +34,24 @@ sudo raspi-config
     3. Select'Yes'
     4. Enable the SSH service.
 
+```bash
+mkdir ~/.ssh
+touch ~/.ssh/authorized_keys
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/authorized_keys
 sudo vim /etc/ssh/sshd_config
+```
 
-   ```plaintext
-   PasswordAuthentication no
-   Match User newuser
-       AllowTcpForwarding yes
-       X11Forwarding no
-       PermitTunnel yes
-   ```
+```plaintext
+# use sed 
+PasswordAuthentication no
+PermitRootLogin no
+AllowTcpForwarding yes
+X11Forwarding no
+PermitTunnel yes
+PubkeyAuthentication yes
+AuthorizedKeysFile     %h/.ssh/authorized_keys
+```
 
 ssh -D 8080 -C newuser@hostname_or_ip
 
