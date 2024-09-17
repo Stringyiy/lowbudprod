@@ -2,27 +2,24 @@
 
 ### Linux Server
 
-sudo adduser newuser
+sudo adduser pi
 
-sudo usermod -aG ssh username
+sudo usermod -aG ssh pi
 
-sudo vim /etc/ssh/sshd_config
+sudo vi /etc/ssh/sshd_config
 
    ```plaintext
-   PasswordAuthentication no
-   Match User newuser
-       AllowTcpForwarding yes
-       X11Forwarding no
-       PermitTunnel yes
+PasswordAuthentication no
+PermitRootLogin no
+PubkeyAuthentication yes
+AuthorizedKeysFile     %h/.ssh/authorized_keys
    ```
 
-sudo usermod -s /bin/rbash newuser
+sudo usermod -s /bin/rbash pi
 
-echo "PATH=/usr/local/bin:/usr/bin:/bin" > /home/newuser/.bash_profile
+echo "your_public_key" >> /home/pi/.ssh/authorized_keys
 
 sudo systemctl restart sshd
-
-echo "your_public_key" >> ~/.ssh/authorized_keys
 
 ### Linux Client
 
@@ -67,6 +64,8 @@ sudo reboot
 
 sudo rpi-eeprom-update
 vcgencmd bootloader_version
+sudo rpi-update
+sudo reboot
 
 #### Audio Set Up
 IQAudio Codec Zero on Pi5 (https://github.com/raspberrypi/Pi-Codec/issues/9)
