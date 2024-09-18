@@ -51,6 +51,12 @@ PermitTunnel yes
 PubkeyAuthentication yes
 AuthorizedKeysFile     %h/.ssh/authorized_keys
 ```
+ssh-keygen -t ed25519 -C 'yi@pi'
+
+'''ip
+scp pi:/home/yi/.ssh/id_ed25519.pub ~/iCloud/Developer/id_ed25519.pub
+scp ~/iCloud/Developer/id_ed25519.pub aws:/home/admin/.ssh/id_ed25519.pub
+'''
 
 ssh -D 8080 -C newuser@hostname_or_ip
 
@@ -69,16 +75,24 @@ vcgencmd bootloader_version
 sudo rpi-update
 sudo reboot
 
+#### pi backup
+lsblk
+sudo umount /dev/sdb1
+sudo dd bs=4M if=/dev/mmcblk0 of=/dev/sda status=progress
+sync
+
 #### Audio Set Up
 IQAudio Codec Zero on Pi5 (https://github.com/raspberrypi/Pi-Codec/issues/9)
 
-   python -m venv ~/envname
+curl -O 'https://github.com/raspberrypi/Pi-Codec/blob/master/Codec_Zero_AUXIN_record_and_HP_playback.state'
+sudo alsactl restore -f ./Codec_Zero_AUXIN_record_and_HP_playback.state
 
-   source ~/envname/bin/activate
-
-   pip install -r requirements.txt
                 
 #### Install OBS on Linux
+
+python -m venv ~/envname
+source ~/envname/bin/activate
+pip install -r requirements.txt
 
 '''
 sudo add-apt-repository ppa:obsproject/obs-studio
@@ -191,6 +205,9 @@ ffmpeg -i train.wav -f segment -segment_time 10 -c copy output%03d.wav
 
 ###Mixing
 
+### Streaming
+#### Chatroom Push Notification
+
 ### RealTime Processing
 
 ### Ref
@@ -200,5 +217,7 @@ ffmpeg -i train.wav -f segment -segment_time 10 -c copy output%03d.wav
 ### Interesting Editing Projects on Github
 [RAVE](https://github.com/acids-ircam/RAVE)
 [FateZero](https://github.com/ChenyangQiQi/FateZero?tab=readme-ov-file)
+[OpenVoice](https://github.com/myshell-ai/OpenVoice)
+[xtts2-ui](https://github.com/BoltzmannEntropy/xtts2-ui)
   
 Disclaimer: This page contains AI generated content and is a work in progress.
