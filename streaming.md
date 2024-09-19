@@ -24,10 +24,7 @@ echo "your_public_key" >> /home/pi/.ssh/authorized_keys
 sudo systemctl restart sshd
 
 ### Linux Client
-
 #### Firmware Update
-
-
 ```bash
 sudo raspi-config
 #    2. In the pop-up window, choose 'Interface Options'-> 'SSH'.
@@ -37,6 +34,7 @@ mkdir ~/.ssh
 touch ~/.ssh/authorized_keys
 chmod 700 ~/.ssh
 chmod 600 ~/.ssh/authorized_keys
+echo "your_public_key" >> /home/pi/.ssh/authorized_keys
 sudo vim /etc/ssh/sshd_config
 ```
 
@@ -58,7 +56,8 @@ scp ~/iCloud/Developer/id_ed25519.pub aws:/home/admin/.ssh/id_ed25519.pub #ip
 cat ~/.ssh/id_ed25519.pub >> ~/.ssh/authorized_keys #server
 sudo systemctl restart sshd #server
 
-ssh -D 8080 admin@hostname_or_ip
+ssh -D 1080 -f -C -q -N admin@13.231.39.140
+export ALL_PROXY=socks5://localhost:1080
 
 vcgencmd bootloader_version
 sudo apt update 
@@ -66,13 +65,14 @@ sudo apt full-upgrade
 sudo apt autoremove
 sudo reboot
 
+ssh -D 8080 admin@13.231.39.140
 sudo raspi-config
 #   Then select 6 Advanced Opitions => A5 Bootloader Version => E1 Latest, answere Yes）
 sudo reboot
 
+ssh -D 8080 admin@13.231.39.140
 sudo rpi-eeprom-update
 vcgencmd bootloader_version
-sudo rpi-update
 sudo reboot
 ```
 
@@ -93,8 +93,8 @@ sudo alsactl restore -f ./Codec_Zero_AUXIN_record_and_HP_playback.state
 
 ```
 # optional
-python -m venv ~/envname
-source ~/envname/bin/activate
+python -m venv ~/stream
+source ~/stream/bin/activate
 pip install -r requirements.txt
 ```
 
@@ -131,7 +131,7 @@ sudo ln -s /usr/share/obs/obs-plugins/obs-ndi/ /usr/local/share/obs/obs-plugins/
 obs-websocket obs-cli obs-distroAV
 display capture
 Wayland Screen Capture (PipeWire)
-NDI 6 streamout
+NDI 6 out
 
 #### Interface
 Consider using an individual AP to handle wireless audio video streams  
