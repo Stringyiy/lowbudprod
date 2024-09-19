@@ -27,13 +27,12 @@ sudo systemctl restart sshd
 
 #### Firmware Update
 
-sudo raspi-config
-
-    2. In the pop-up window, choose 'Interface Options'-> 'SSH'.
-    3. Select'Yes'
-    4. Enable the SSH service.
 
 ```bash
+sudo raspi-config
+#    2. In the pop-up window, choose 'Interface Options'-> 'SSH'.
+#    3. Select'Yes'
+#    4. Enable the SSH service.
 mkdir ~/.ssh
 touch ~/.ssh/authorized_keys
 chmod 700 ~/.ssh
@@ -51,14 +50,15 @@ PermitTunnel yes
 PubkeyAuthentication yes
 AuthorizedKeysFile     %h/.ssh/authorized_keys
 ```
+
+```
 ssh-keygen -t ed25519 -C 'yi@pi'
+scp pi:/home/yi/.ssh/id_ed25519.pub ~/iCloud/Developer/id_ed25519.pub #ip
+scp ~/iCloud/Developer/id_ed25519.pub aws:/home/admin/.ssh/id_ed25519.pub #ip
+cat ~/.ssh/id_ed25519.pub >> ~/.ssh/authorized_keys #server
+sudo systemctl restart sshd #server
 
-'''ip
-scp pi:/home/yi/.ssh/id_ed25519.pub ~/iCloud/Developer/id_ed25519.pub
-scp ~/iCloud/Developer/id_ed25519.pub aws:/home/admin/.ssh/id_ed25519.pub
-'''
-
-ssh -D 8080 -C newuser@hostname_or_ip
+ssh -D 8080 admin@hostname_or_ip
 
 vcgencmd bootloader_version
 sudo apt update 
@@ -67,13 +67,14 @@ sudo apt autoremove
 sudo reboot
 
 sudo raspi-config
-   Then select 6 Advanced Opitions => A5 Bootloader Version => E1 Latest, answere Yes）
+#   Then select 6 Advanced Opitions => A5 Bootloader Version => E1 Latest, answere Yes）
 sudo reboot
 
 sudo rpi-eeprom-update
 vcgencmd bootloader_version
 sudo rpi-update
 sudo reboot
+```
 
 #### pi backup
 lsblk
@@ -82,7 +83,7 @@ sudo dd bs=4M if=/dev/mmcblk0 of=/dev/sda status=progress
 sync
 
 #### Audio Set Up
-IQAudio Codec Zero on Pi5 (https://github.com/raspberrypi/Pi-Codec/issues/9)
+[IQAudio Codec Zero on Pi5](https://github.com/raspberrypi/Pi-Codec/issues/9)
 
 curl -O 'https://github.com/raspberrypi/Pi-Codec/blob/master/Codec_Zero_AUXIN_record_and_HP_playback.state'
 sudo alsactl restore -f ./Codec_Zero_AUXIN_record_and_HP_playback.state
@@ -90,20 +91,47 @@ sudo alsactl restore -f ./Codec_Zero_AUXIN_record_and_HP_playback.state
                 
 #### Install OBS on Linux
 
+```
+# optional
 python -m venv ~/envname
 source ~/envname/bin/activate
 pip install -r requirements.txt
+```
 
-'''
+```
 sudo add-apt-repository ppa:obsproject/obs-studio
-
+sudo apt update
 sudo apt install obs-studio
-'''
+```
 
 #### Screen Broadcasting
+```
+curl -O https://github.com/DistroAV/DistroAV/blob/master/CI/libndi-get.sh
+./libndi-get.sh
+sudo apt install avahi-daemon ffmpeg
+sudo systemctl enable avahi-daemon
+sudo systemctl start avahi-daemon
+sudo ufw allow 5353/udp
+sudo ufw allow 5959:5969/tcp
+sudo ufw allow 5959:5969/udp
+sudo ufw allow 6960:6970/tcp
+sudo ufw allow 6960:6970/udp
+sudo ufw allow 7960:7970/tcp
+sudo ufw allow 7960:7970/udp
+sudo ufw allow 5960/tcp
+curl -O https://github.com/DistroAV/DistroAV/releases/download/4.14.1/obs-ndi-4.14.1-x86_64-linux-gnu.deb
+sudo dpkg -i obs-ndi-4.14.1-x86_64-linux-gnu.deb
+'''
+sudo ln -s /usr/lib/x86_64-linux-gnu/obs-plugins/obs-ndi.so /usr/local/lib/obs-plugins/obs-ndi.so
+sudo ln -s /usr/share/obs/obs-plugins/obs-ndi/ /usr/local/share/obs/obs-plugins/obs-ndi
+'''
+
+```
+
 obs-websocket obs-cli obs-distroAV
 display capture
-streamout
+Wayland Screen Capture (PipeWire)
+NDI 6 streamout
 
 #### Interface
 Consider using an individual AP to handle wireless audio video streams  
