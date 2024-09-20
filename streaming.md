@@ -135,57 +135,23 @@ NDI 6 out
 
 #### Interface
 Consider using an individual AP to handle wireless audio video streams  
-  
-OpenWRT  
-RaspAP  
-  
-RaspAP is a web interface that allows you to easily manage a Raspberry Pi as a Wi-Fi access point and router. If you want to set it up for LAN connections, follow these steps:  
 
-### Prerequisites
-1. **Raspberry Pi**: Ensure you have a Raspberry Pi with Raspbian installed.
-2. **Internet Connection**: Your Raspberry Pi should be connected to the internet via Ethernet for WAN (Wide Area Network) connect
-ions.
-3. **SSH Access**: Enable SSH on your Raspberry Pi for easier access.
+```  
+sudo nmcli dev wifi hotspot ifname wlan0 con-name piSpot ssid piSpot password PASSWORD
+sudo nmcli connection up MyHotspot
+echo "net.ipv4.ip_forward=1" | sudo tee -a /etc/sysctl.conf
+sudo sysctl -p
+sudo apt install iptables
+sudo iptables -t nat -A POSTROUTING -o wlan1 -j MASQUERADE  # Replace wlan1 with your internet-facing interface
+sudo iptables -A FORWARD -i wlan1 -o wlan0 -j ACCEPT
+sudo iptables -A FORWARD -i wlan0 -o wlan1 -m state --state RELATED,ESTABLISHED -j ACCEPT
+```
 
-### Installation Steps
-1. **Update your Raspberry Pi**:
-   ```bash
-   sudo apt update
-   sudo apt upgrade -y
-   ```
+**Save the iptables rules** (if needed):
 
-2. **Install RaspAP**:
-   - Open a terminal and run the following command:
-     ```bash
-     curl -sL https://install.raspap.com | bash
-     ```
-   - This will install RaspAP along with the necessary dependencies.
-
-3. **Configure RaspAP**:
-   - After installation, you can access the RaspAP web interface by navigating to `http://10.3.141.1` (default IP of the RaspAP).
-   - The default login credentials are:
-     - Username: `admin`
-     - Password: `secret`
-
-4. **Network Configuration**:
-   - **LAN Network Configuration**: In the RaspAP interface, navigate to the DHCP and DNS settings to set up the DHCP server to as
-sign IPs to devices connected to the Raspberry Pi.
-   - **Wi-Fi Network Configuration**: Configure the Wi-Fi settings to set up an access point for clients.
-
-5. **Test the Setup**:
-   - Connect another device (like a phone or laptop) to the Wi-Fi created by RaspAP. Ensure it can access the internet and the loc
-al network.
-
-### Additional Configuration (Optional)
-- **IP Address**: You may need to configure the static IP address for the Raspberry Pi if you don't want it to change.
-- **Firewall**: Consider setting up a firewall for extra security.
-
-### Access Through LAN
-To access your Raspberry Pi through LAN, you can also find its IP address via the Router's DHCP list and connect to it.
-
-### Further Reading
-For more detailed instructions and advanced configurations, refer to the official [RaspAP documentation](https://docs.raspap.com/)
-.
+```bash
+sudo apt install iptables-persistent
+```
 
 ### Sourcing
 RTMP (Streaming Platform), RTSP (IP Cam), NDI (NewTek), UVC (Capture Card/WebCam)
@@ -196,11 +162,13 @@ Topdirector (RTSP/NDI in, RTMP/NDI out)
 Camo Studio (UVC in, RTMP out)
 
 Android (refurb) :  
-  
 workload asc: UVC, NDI
+DroidCam
 
 PC:
 OBS Studio + DistroAV
+
+traffic monitor auto switch
 
 ###Preprocessing  
 
@@ -231,18 +199,18 @@ ffmpeg -i voiceout.aac -ar 24000 train.wav
 ffmpeg -i train.wav -f segment -segment_time 10 -c copy output%03d.wav
 '''
 
-###Mixing
+### Mixing
 
 ### Streaming
 #### Chatroom Push Notification
 
 ### RealTime Processing
 
-### Ref
+### Ref  
 
 [NDI](https://interfacinglinux.com/2024/08/15/ndi-6-on-linux-with-obs/)
 
-### Interesting Editing Projects on Github
+### Github Project Mentions
 [RAVE](https://github.com/acids-ircam/RAVE)
 [FateZero](https://github.com/ChenyangQiQi/FateZero?tab=readme-ov-file)
 [OpenVoice](https://github.com/myshell-ai/OpenVoice)
