@@ -172,6 +172,31 @@ traffic monitor auto switch
 
 ###Preprocessing  
 
+#### Video Rescale and Concat
+awk '{print $0}' combine.txt > ffi.txt
+mvflv() {
+while read -r line; do
+    echo "Processing: $line"
+    mv $line $line.flv
+done < ffi.txt
+}
+mvflv
+awk '{print "file " $0 ".flv"}' ffi.txt > ffi_flv.txt
+
+####[Optional] Rescale and Rotation
+scaleflv() {
+while read -r line; do
+    echo "Processing: $line"
+    ffmpeg -i "$line" -vf "scale=1920:1080" -c:v libx264 -crf 23 -c:a copy "scaled_$(basename "$line")"
+done < ffi_scaled.txt
+}
+scaleflv
+awk '{print "scaled_" $0}' ffi_flv.txt > ffi_scaled.txt
+
+ffmpeg -f concat -safe 0 -i ffi_flv.txt -c copy output.mp4
+rm $(cat ffi_flv.txt)
+rm ffi.txt ffi_flv.txt ffi_scaled.txt
+
 ####Voice Production and TTS  
 
 '''
