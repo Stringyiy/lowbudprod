@@ -132,6 +132,7 @@ obs-websocket obs-cli obs-distroAV
 display capture
 Wayland Screen Capture (PipeWire)
 NDI 6 out
+https://dicaffeine.com
 
 #### Interface
 Consider using an individual AP to handle wireless audio video streams  
