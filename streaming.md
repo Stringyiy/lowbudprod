@@ -121,17 +121,15 @@ sudo ufw allow 7960:7970/udp
 sudo ufw allow 5960/tcp
 curl -O https://github.com/DistroAV/DistroAV/releases/download/4.14.1/obs-ndi-4.14.1-x86_64-linux-gnu.deb
 sudo dpkg -i obs-ndi-4.14.1-x86_64-linux-gnu.deb
-'''
+
 sudo ln -s /usr/lib/x86_64-linux-gnu/obs-plugins/obs-ndi.so /usr/local/lib/obs-plugins/obs-ndi.so
 sudo ln -s /usr/share/obs/obs-plugins/obs-ndi/ /usr/local/share/obs/obs-plugins/obs-ndi
-'''
 
 ```
 
 obs-websocket obs-cli obs-distroAV
-display capture
 Wayland Screen Capture (PipeWire)
-NDI 6 out
+NDI 6 out 
 https://dicaffeine.com
 
 #### Interface
@@ -228,7 +226,8 @@ ffmpeg -i train.wav -f segment -segment_time 10 -c copy output%03d.wav
 ### Mixing
 
 ### Streaming
-#### Chatroom Push Notification
+#### Chatroom Notification
+git clone git@github.com:saermart/DouyinLiveWebFetcher.git
 
 ### RealTime Processing
 
