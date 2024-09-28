@@ -65,16 +65,53 @@ sudo apt full-upgrade
 sudo apt autoremove
 sudo reboot
 
-ssh -D 8080 admin@13.231.39.140
+ssh -D 1080 admin@13.231.39.140
 sudo raspi-config
 #   Then select 6 Advanced Opitions => A5 Bootloader Version => E1 Latest, answere Yes）
 sudo reboot
 
-ssh -D 8080 admin@13.231.39.140
+ssh -D 1080 admin@13.231.39.140
 sudo rpi-eeprom-update
 vcgencmd bootloader_version
 sudo reboot
 ```
+  ```bash
+  sudo apt update
+  sudo apt install squid
+  ```
+   ```bash
+   sudo nano /etc/squid/squid.conf
+   ```
+   ```plaintext
+#http_port 3128
+acl my_network src 192.168.0.0/24  # Change to your network
+http_access allow my_network
+http_access allow localhost
+http_access deny all
+cache_peer localhost parent 1080 0 no-query originserver
+never_direct allow all
+   ```
+
+```bash
+sudo systemctl restart squid
+sudo vi /etc/sysctl.conf
+net.ipv4.ip_forward=1
+sudo sysctl -p
+```
+```bash
+```
+```bash
+curl -x localhost:3128 ipinfo.io/ip
+```
+
+```bash
+sudo ufw allow 3128/tcp
+sudo ufw delete allow 3128
+```
+
+sshuttle
+squid
+client
 
 #### pi backup
 lsblk
