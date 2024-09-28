@@ -174,13 +174,16 @@ Consider using an individual AP to handle wireless audio video streams
 
 ```  
 sudo nmcli dev wifi hotspot ifname wlan0 con-name piSpot ssid piSpot password PASSWORD
-sudo nmcli connection up MyHotspot
-echo "net.ipv4.ip_forward=1" | sudo tee -a /etc/sysctl.conf
+sudo nmcli connection up piSpot
+#echo "net.ipv4.ip_forward=1" | sudo tee -a /etc/sysctl.conf
 sudo sysctl -p
-sudo apt install iptables
+sudo apt install iptables proxychains
 sudo iptables -t nat -A POSTROUTING -o wlan1 -j MASQUERADE  # Replace wlan1 with your internet-facing interface
 sudo iptables -A FORWARD -i wlan1 -o wlan0 -j ACCEPT
 sudo iptables -A FORWARD -i wlan0 -o wlan1 -m state --state RELATED,ESTABLISHED -j ACCEPT
+sudo vi /etc/proxychains.conf
+[ProxyList]
+socks5 127.0.0.1 1080
 ```
 
 **Save the iptables rules** (if needed):
