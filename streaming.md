@@ -56,8 +56,9 @@ scp ~/iCloud/Developer/id_ed25519.pub aws:/home/admin/.ssh/id_ed25519.pub #ip
 cat ~/.ssh/id_ed25519.pub >> ~/.ssh/authorized_keys #server
 sudo systemctl restart sshd #server
 
-ssh -D 1080 -f -C -q -N admin@13.231.39.140
-export ALL_PROXY=socks5://localhost:1080
+ssh -D 192.168.0.100:1080 -f -C -q -N admin@13.231.39.140
+export ALL_PROXY=socks5://192.168.0.100:1080
+cat 'Acquire::https::proxy "socks5h://192.168.0.100:1080";' >> /etc/apt/apt.conf.d/99proxy
 
 vcgencmd bootloader_version
 sudo apt update 
@@ -65,38 +66,18 @@ sudo apt full-upgrade
 sudo apt autoremove
 sudo reboot
 
-ssh -D 1080 admin@13.231.39.140
+ssh -D 192.168.0.100:1080 -f -C -q -N admin@13.231.39.140
 sudo raspi-config
 #   Then select 6 Advanced Opitions => A5 Bootloader Version => E1 Latest, answere Yes）
 sudo reboot
 
-ssh -D 1080 admin@13.231.39.140
+ssh -D 192.168.0.100:1080 -f -C -q -N admin@13.231.39.140
 sudo rpi-eeprom-update
 vcgencmd bootloader_version
 sudo reboot
-```
-  ```bash
-  sudo apt update
-  sudo apt install squid
-  ```
-   ```bash
-   sudo nano /etc/squid/squid.conf
-   ```
-   ```plaintext
-#http_port 3128
-acl my_network src 192.168.0.0/24  # Change to your network
-http_access allow my_network
-http_access allow localhost
-http_access deny all
-cache_peer localhost parent 1080 0 no-query originserver
-never_direct allow all
-   ```
-
-```bash
-sudo systemctl restart squid
-sudo vi /etc/sysctl.conf
-net.ipv4.ip_forward=1
-sudo sysctl -p
+#sudo vi /etc/sysctl.conf
+#net.ipv4.ip_forward=1
+#sudo sysctl -p
 ```
 ```bash
 ```
@@ -110,8 +91,6 @@ sudo ufw delete allow 3128
 ```
 
 sshuttle
-squid
-client
 
 #### pi backup
 lsblk
@@ -176,26 +155,19 @@ Optimize LAN to handle wireless audio video streams
 #echo "net.ipv4.ip_forward=1" | sudo tee -a /etc/sysctl.conf
 sudo sysctl -p
 sudo apt install iptables proxychains
-# sudo vi /etc/proxychains.conf
-[ProxyList]
-socks5 127.0.0.1 1080
-cat 'Acquire::https::proxy "socks5h://localhost:1080";' >> /etc/apt/apt.conf.d/99proxy
+cat 'socks5 192.168.0.100 1080' >> /etc/proxychains.conf
 ```
 ```
 #bashrc
 #ssh -D 1080 -f -C -q -N admin@13.231.39.140
-#ssh -D 192.168.0.100:1080 -f -C -q -N admin@13.231.39.140
 sudo nmcli dev modify eth1 ipv4.ignore-auto-dns yes
-sudo nmcli connection modify "Wired connection 2" ipv4.dns "8.8.8.8,8.8.4.4"
-sudo nmcli connection up "Wired connection 2"
-export ALL_PROXY=socks5h://localhost:1080
-```
-
-```bash
-sudo apt install iptables-persistent
-ssh -D 192.168.0.100:1080 -f -C -q -N admin@13.231.39.140
+sudo nmcli connection modify "Wired connection 2" ipv4.dns "8.8.8.8"        
+#export ALL_PROXY=socks5h://localhost:1080
 sudo iptables -A INPUT -p tcp --dport 1080 -s 192.168.0.100/24 -j ACCEPT
 sudo iptables -A INPUT -p tcp --dport 1080 -j DROP
+ssh -D 192.168.0.100:1080 -f -C -q -N admin@13.231.39.140 
+~
+```
 
 ### Sourcing
 RTMP (Streaming Platform), RTSP (IP Cam), NDI (NewTek), UVC (Capture Card/WebCam)
