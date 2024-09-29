@@ -173,34 +173,19 @@ https://dicaffeine.com
 Consider using an individual AP to handle wireless audio video streams  
 
 ```  
-sudo nmcli dev wifi hotspot ifname wlan0 con-name piSpot ssid piSpot password PASSWORD
-sudo nmcli connection up piSpot
 #echo "net.ipv4.ip_forward=1" | sudo tee -a /etc/sysctl.conf
 sudo sysctl -p
 sudo apt install iptables proxychains
-sudo iptables -t nat -A POSTROUTING -o wlan1 -j MASQUERADE  # Replace wlan1 with your internet-facing interface
-sudo iptables -A FORWARD -i wlan1 -o wlan0 -j ACCEPT
-sudo iptables -A FORWARD -i wlan0 -o wlan1 -m state --state RELATED,ESTABLISHED -j ACCEPT
 sudo vi /etc/proxychains.conf
 [ProxyList]
 socks5 127.0.0.1 1080
 cat 'Acquire::https::proxy "socks5h://localhost:1080";' >> /etc/apt/apt.conf.d/99proxy
-# raspap
-sudo mv /etc/default/hostapd ~/default_hostapd.old                                                                                
-sudo cp /etc/hostapd/hostapd.conf ~/hostapd.conf.old                                                                              
-sudo cp config/hostapd.conf /etc/hostapd/hostapd.conf                                                                             
-sudo cp config/090_raspap.conf /etc/dnsmasq.d/090_raspap.conf                                                                     
-sudo cp config/090_wlan0.conf /etc/dnsmasq.d/090_wlan0.conf                                                                       
-sudo cp config/dhcpcd.conf /etc/dhcpcd.conf                                                                                       
-sudo cp config/config.php /var/www/html/includes/                                                                                 
-sudo cp config/defaults.json /etc/raspap/networking/
-```
-
-**Save the iptables rules** (if needed):
 
 ```bash
 sudo apt install iptables-persistent
-```
+ssh -D 192.168.0.100:1080 -f -C -q -N admin@13.231.39.140
+sudo iptables -A INPUT -p tcp --dport 1080 -s 192.168.0.100/24 -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport 1080 -j DROP
 
 ### Sourcing
 RTMP (Streaming Platform), RTSP (IP Cam), NDI (NewTek), UVC (Capture Card/WebCam)
