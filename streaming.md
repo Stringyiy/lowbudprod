@@ -170,16 +170,26 @@ NDI 6 out
 https://dicaffeine.com
 
 #### Interface
-Consider using an individual AP to handle wireless audio video streams  
+Optimize LAN to handle wireless audio video streams  
 
 ```  
 #echo "net.ipv4.ip_forward=1" | sudo tee -a /etc/sysctl.conf
 sudo sysctl -p
 sudo apt install iptables proxychains
-sudo vi /etc/proxychains.conf
+# sudo vi /etc/proxychains.conf
 [ProxyList]
 socks5 127.0.0.1 1080
 cat 'Acquire::https::proxy "socks5h://localhost:1080";' >> /etc/apt/apt.conf.d/99proxy
+```
+```
+#bashrc
+#ssh -D 1080 -f -C -q -N admin@13.231.39.140
+#ssh -D 192.168.0.100:1080 -f -C -q -N admin@13.231.39.140
+sudo nmcli dev modify eth1 ipv4.ignore-auto-dns yes
+sudo nmcli connection modify "Wired connection 2" ipv4.dns "8.8.8.8,8.8.4.4"
+sudo nmcli connection up "Wired connection 2"
+export ALL_PROXY=socks5h://localhost:1080
+```
 
 ```bash
 sudo apt install iptables-persistent
