@@ -258,7 +258,4 @@ git clone git@github.com:saermart/DouyinLiveWebFetcher.git
 [OpenVoice](https://github.com/myshell-ai/OpenVoice)
 [xtts2-ui](https://github.com/BoltzmannEntropy/xtts2-ui)
   
-Become a sponsor and help speed up the future development of this project.  
-Accepting Apple Cash sponsorship for this project at edi.joey@gmail.com  
-
 Disclaimer: This page contains AI generated content and is a work in progress.
